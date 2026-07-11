@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#111827">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Álbum 2026">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="apple-touch-icon" href="./icons/icon-192.png">
+  <title>Álbum Copa 2026</title>
+  <style>
+    :root{
+      --bg:#0b1020; --panel:#151c30; --panel2:#1d263d; --text:#f8fafc;
+      --muted:#a8b3c7; --red:#ef4444; --red2:#7f1d1d; --green:#22c55e;
+      --green2:#14532d; --blue:#3b82f6; --line:#2b3653; --shadow:0 14px 36px rgba(0,0,0,.28);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0; min-height:100vh; color:var(--text); background:
+      radial-gradient(circle at 10% -10%,#24365d 0,transparent 32%),
+      linear-gradient(180deg,#0b1020,#0a0f1b 55%,#080c16);
+      font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      padding-bottom:calc(92px + env(safe-area-inset-bottom));
+    }
+    button,input,select{font:inherit}
+    button{cursor:pointer}
+    .app{max-width:1080px;margin:auto;padding:16px}
+    header{
+      position:sticky;top:0;z-index:20;margin:-16px -16px 14px;padding:calc(14px + env(safe-area-inset-top)) 16px 14px;
+      background:rgba(11,16,32,.92);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,.08)
+    }
+    .topline{display:flex;align-items:center;gap:12px;justify-content:space-between}
+    h1{font-size:1.25rem;margin:0;letter-spacing:.2px}
+    .subtitle{color:var(--muted);font-size:.84rem;margin-top:3px}
+    .install{
+      border:1px solid #5b76ad;background:#24385f;color:white;border-radius:12px;padding:9px 12px;font-weight:750
+    }
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:14px 0}
+    .stat{background:linear-gradient(180deg,#1b2540,#141c30);border:1px solid var(--line);border-radius:16px;padding:12px;box-shadow:var(--shadow)}
+    .stat strong{display:block;font-size:1.3rem}.stat span{color:var(--muted);font-size:.78rem}
+    .controls{display:grid;gap:10px;margin-bottom:12px}
+    .searchbox{display:flex;gap:8px}
+    input[type=search],input[type=text],select{
+      width:100%;border:1px solid var(--line);background:#121a2d;color:white;border-radius:13px;padding:12px 13px;outline:none
+    }
+    input:focus,select:focus{border-color:#6383c4;box-shadow:0 0 0 3px rgba(59,130,246,.18)}
+    .segmented{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+    .segmented button,.secondary{
+      border:1px solid var(--line);background:#151d31;color:#dbe5f5;border-radius:12px;padding:10px;font-weight:700
+    }
+    .segmented button.active{background:#31518a;border-color:#5579ba}
+    .country-strip{
+      display:flex;gap:8px;overflow-x:auto;padding:2px 0 10px;scrollbar-width:none
+    }
+    .country-strip::-webkit-scrollbar{display:none}
+    .country-pill{
+      white-space:nowrap;border:1px solid var(--line);background:#151d31;color:white;border-radius:999px;padding:9px 12px;
+      display:flex;align-items:center;gap:7px;font-weight:700
+    }
+    .country-pill.active{background:#2b477b;border-color:#6783bd}
+    .count-badge{font-size:.72rem;background:rgba(255,255,255,.1);padding:2px 6px;border-radius:999px;color:#dce6f6}
+    .legend{display:flex;gap:14px;align-items:center;color:var(--muted);font-size:.82rem;margin:3px 2px 12px}
+    .dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:5px}
+    .dot.red{background:var(--red)}.dot.green{background:var(--green)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+    .country-card{background:linear-gradient(180deg,#171f35,#11192b);border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:var(--shadow)}
+    .country-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+    .country-title{display:flex;align-items:center;gap:9px;min-width:0}
+    .flag{font-size:1.65rem;line-height:1}
+    .country-title h2{font-size:1rem;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .country-title small{color:var(--muted)}
+    .missing-total{background:#481b24;color:#fecaca;border:1px solid #7f1d1d;border-radius:999px;padding:6px 9px;font-weight:800;font-size:.78rem;white-space:nowrap}
+    .stickers{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
+    .sticker{
+      border:1px solid transparent;border-radius:11px;padding:10px 3px;text-align:center;font-weight:900;min-height:43px;color:white;
+      transition:transform .12s ease,filter .12s ease
+    }
+    .sticker:active{transform:scale(.96)}
+    .sticker.missing{background:linear-gradient(180deg,#dc3944,#991b1b);border-color:#ef6a71}
+    .sticker.owned{background:linear-gradient(180deg,#22a957,#166534);border-color:#4ade80}
+    .sticker.hidden-status{display:none}
+    .hint{color:var(--muted);font-size:.76rem;margin:10px 0 0}
+    .empty{padding:28px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:16px}
+    .bottom-bar{
+      position:fixed;z-index:30;left:50%;bottom:calc(12px + env(safe-area-inset-bottom));transform:translateX(-50%);
+      width:min(94%,650px);display:grid;grid-template-columns:1fr 1fr;gap:9px;padding:9px;background:rgba(15,22,38,.94);
+      border:1px solid #34415e;border-radius:19px;box-shadow:0 20px 48px rgba(0,0,0,.5);backdrop-filter:blur(14px)
+    }
+    .scan-btn,.manual-btn{
+      border:0;border-radius:13px;padding:13px 10px;color:white;font-weight:850
+    }
+    .scan-btn{background:linear-gradient(180deg,#3776e8,#1d4ed8)}
+    .manual-btn{background:#26334f;border:1px solid #3b4b70}
+    .modal{position:fixed;inset:0;z-index:50;background:rgba(2,6,15,.78);display:none;align-items:flex-end;justify-content:center}
+    .modal.open{display:flex}
+    .sheet{
+      width:min(100%,680px);max-height:92vh;overflow:auto;background:#111a2d;border:1px solid #34415e;border-radius:24px 24px 0 0;
+      padding:18px 16px calc(20px + env(safe-area-inset-bottom));box-shadow:0 -18px 70px rgba(0,0,0,.55)
+    }
+    .sheet-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+    .sheet h3{margin:0}.close{border:0;background:#27344f;color:white;border-radius:50%;width:38px;height:38px;font-size:1.1rem}
+    video,.preview{width:100%;aspect-ratio:4/3;background:#030712;border-radius:16px;object-fit:cover;margin:12px 0}
+    .preview{display:none}
+    .modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+    .primary{border:0;background:#2563eb;color:white;border-radius:13px;padding:12px;font-weight:850}
+    .danger{border:1px solid #7f1d1d;background:#451a1a;color:#fecaca;border-radius:13px;padding:12px;font-weight:800}
+    .ocr-status{font-size:.82rem;color:var(--muted);margin:10px 2px}
+    .result{display:none;border-radius:16px;padding:15px;margin-top:12px;border:1px solid}
+    .result.show{display:block}.result.missing{background:#3b151a;border-color:#7f1d1d}.result.owned{background:#12331f;border-color:#166534}
+    .result-code{font-size:1.75rem;font-weight:950}.result-country{color:#dbe5f5;margin:3px 0 9px}
+    .result .primary{width:100%;margin-top:8px}
+    .manual-row{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:12px}
+    .file-label{display:block;text-align:center;border:1px dashed #4c5e83;border-radius:13px;padding:11px;color:#cad6e8;margin-top:10px}
+    #fileInput{display:none}
+    .toast{
+      position:fixed;z-index:70;left:50%;top:calc(14px + env(safe-area-inset-top));transform:translate(-50%,-150%);
+      background:#eef2ff;color:#172554;padding:11px 15px;border-radius:12px;font-weight:800;box-shadow:var(--shadow);transition:.25s
+    }
+    .toast.show{transform:translate(-50%,0)}
+    @media(min-width:760px){
+      .controls{grid-template-columns:1.4fr .9fr;align-items:center}
+      .stickers{grid-template-columns:repeat(10,1fr)}
+      .country-card{grid-column:1/-1}
+    }
+    @media(display-mode:standalone){.install{display:none!important}}
+  </style>
+</head>
+<body>
+  <div class="toast" id="toast"></div>
+  <div class="app">
+    <header>
+      <div class="topline">
+        <div>
+          <h1>🏆 Álbum Copa 2026</h1>
+          <div class="subtitle">Controle das figurinhas do álbum</div>
+        </div>
+        <button id="installBtn" class="install">Instalar</button>
+      </div>
+    </header>
+
+    <section class="stats">
+      <div class="stat"><strong id="missingStat">333</strong><span>faltando</span></div>
+      <div class="stat"><strong id="ownedStat">627</strong><span>já tenho</span></div>
+      <div class="stat"><strong>48</strong><span>seleções</span></div>
+    </section>
+
+    <section class="controls">
+      <div class="searchbox">
+        <input id="search" type="search" placeholder="Buscar país ou código, ex.: Brasil, BRA 14">
+      </div>
+      <div class="segmented" aria-label="Filtro de situação">
+        <button data-status="all" class="active">Todas</button>
+        <button data-status="missing">Faltando</button>
+        <button data-status="owned">Já tenho</button>
+      </div>
+    </section>
+
+    <div class="country-strip" id="countryStrip"></div>
+
+    <div class="legend">
+      <span><i class="dot red"></i>Faltando</span>
+      <span><i class="dot green"></i>Já tenho</span>
+      <span>Toque em um código para alterar.</span>
+    </div>
+
+    <main class="grid" id="countryGrid"></main>
+  </div>
+
+  <nav class="bottom-bar">
+    <button id="openScanner" class="scan-btn">📷 Escanear figurinha</button>
+    <button id="openManual" class="manual-btn">⌨️ Digitar código</button>
+  </nav>
+
+  <div class="modal" id="scannerModal" role="dialog" aria-modal="true">
+    <div class="sheet">
+      <div class="sheet-head">
+        <div>
+          <h3>Escanear figurinha</h3>
+          <div class="subtitle">Aponte para o código, como BRA 14 ou JPN 2.</div>
+        </div>
+        <button class="close" data-close>✕</button>
+      </div>
+
+      <video id="camera" autoplay playsinline muted></video>
+      <canvas id="canvas" hidden></canvas>
+      <img id="preview" class="preview" alt="Foto capturada">
+
+      <div class="modal-actions">
+        <button id="captureBtn" class="primary">Capturar e verificar</button>
+        <button id="retryBtn" class="secondary">Reabrir câmera</button>
+      </div>
+
+      <label class="file-label" for="fileInput">Ou escolher uma foto da galeria</label>
+      <input id="fileInput" type="file" accept="image/*" capture="environment">
+
+      <div class="ocr-status" id="ocrStatus">A câmera funciona em HTTPS ou no app instalado.</div>
+      <div class="manual-row">
+        <input id="manualCode" type="text" inputmode="text" autocomplete="off" placeholder="Código manual: BRA 14">
+        <button id="checkManual" class="primary">Buscar</button>
+      </div>
+
+      <div class="result" id="scanResult">
+        <div class="result-code" id="resultCode"></div>
+        <div class="result-country" id="resultCountry"></div>
+        <strong id="resultStatus"></strong>
+        <button id="toggleScanned" class="primary"></button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js" defer></script>
+  <script>
+    const INITIAL_COUNTRIES = [{"code": "MEX", "name": "México", "flag": "🇲🇽", "missing": [1, 2, 7, 11, 13, 16, 17]}, {"code": "RSA", "name": "África do Sul", "flag": "🇿🇦", "missing": [10, 14, 15, 18]}, {"code": "KOR", "name": "Coreia do Sul", "flag": "🇰🇷", "missing": [3, 5, 6, 7, 8, 15, 17, 19]}, {"code": "CZE", "name": "Tchéquia", "flag": "🇨🇿", "missing": [13, 16, 18, 19]}, {"code": "CAN", "name": "Canadá", "flag": "🇨🇦", "missing": [2, 5, 8, 10, 12, 13, 20]}, {"code": "BIH", "name": "Bósnia e Herzegovina", "flag": "🇧🇦", "missing": [3, 5]}, {"code": "QAT", "name": "Catar", "flag": "🇶🇦", "missing": [6, 16]}, {"code": "SUI", "name": "Suíça", "flag": "🇨🇭", "missing": [1, 5, 7, 17, 18, 19, 20]}, {"code": "BRA", "name": "Brasil", "flag": "🇧🇷", "missing": [2, 14]}, {"code": "MAR", "name": "Marrocos", "flag": "🇲🇦", "missing": [1, 2, 4, 10, 14]}, {"code": "HAI", "name": "Haiti", "flag": "🇭🇹", "missing": [2, 3, 6, 7, 13, 16, 20]}, {"code": "SCO", "name": "Escócia", "flag": "🏴", "missing": [8, 11, 14, 16, 17]}, {"code": "USA", "name": "Estados Unidos", "flag": "🇺🇸", "missing": [1, 2, 6, 7, 11]}, {"code": "PAR", "name": "Paraguai", "flag": "🇵🇾", "missing": [2, 3, 5, 6, 8, 9, 10, 11, 15, 16, 18]}, {"code": "AUS", "name": "Austrália", "flag": "🇦🇺", "missing": [4, 5, 6, 7, 8, 9, 11, 14, 15, 17, 18, 19]}, {"code": "TUR", "name": "Turquia", "flag": "🇹🇷", "missing": [1, 5, 7, 8, 9, 11, 13]}, {"code": "GER", "name": "Alemanha", "flag": "🇩🇪", "missing": [1, 3, 4, 8, 11, 13]}, {"code": "CUW", "name": "Curaçao", "flag": "🇨🇼", "missing": [2, 3, 4, 8, 10, 12, 19]}, {"code": "CIV", "name": "Costa do Marfim", "flag": "🇨🇮", "missing": [9, 13, 14, 17]}, {"code": "ECU", "name": "Equador", "flag": "🇪🇨", "missing": [2, 4, 6, 10, 12, 15, 19]}, {"code": "NED", "name": "Holanda", "flag": "🇳🇱", "missing": [2, 5, 6, 7, 9, 15, 18]}, {"code": "JPN", "name": "Japão", "flag": "🇯🇵", "missing": [2, 4, 6, 14, 18, 19, 20]}, {"code": "SWE", "name": "Suécia", "flag": "🇸🇪", "missing": [1, 3, 8, 10, 12, 15, 17, 20]}, {"code": "TUN", "name": "Tunísia", "flag": "🇹🇳", "missing": [3, 4, 6, 7, 9, 18, 19, 20]}, {"code": "BEL", "name": "Bélgica", "flag": "🇧🇪", "missing": [1, 2, 5, 6, 10, 11, 12, 14, 16, 17]}, {"code": "EGY", "name": "Egito", "flag": "🇪🇬", "missing": [4, 6, 8, 10, 15, 16, 20]}, {"code": "IRN", "name": "Irã", "flag": "🇮🇷", "missing": [1, 2, 6, 8, 10, 11, 13, 14, 19]}, {"code": "NZL", "name": "Nova Zelândia", "flag": "🇳🇿", "missing": [1, 5, 7, 8, 19]}, {"code": "ESP", "name": "Espanha", "flag": "🇪🇸", "missing": [1, 2, 3, 4, 6, 8, 9, 10, 13, 18, 20]}, {"code": "CPV", "name": "Cabo Verde", "flag": "🇨🇻", "missing": [3, 4, 10, 12, 17, 20]}, {"code": "KSA", "name": "Arábia Saudita", "flag": "🇸🇦", "missing": [2, 4, 6, 10, 11, 12, 15, 17]}, {"code": "URU", "name": "Uruguai", "flag": "🇺🇾", "missing": [2, 3, 9, 10, 11, 13, 14, 19]}, {"code": "FRA", "name": "França", "flag": "🇫🇷", "missing": [1, 3, 4, 5, 7, 8, 9, 11, 15, 18]}, {"code": "SEN", "name": "Senegal", "flag": "🇸🇳", "missing": [1]}, {"code": "IRQ", "name": "Iraque", "flag": "🇮🇶", "missing": [8, 9, 11, 13, 14, 16, 18, 19]}, {"code": "NOR", "name": "Noruega", "flag": "🇳🇴", "missing": [2, 3, 7, 9, 11, 16, 19]}, {"code": "ARG", "name": "Argentina", "flag": "🇦🇷", "missing": [9, 14, 18, 19]}, {"code": "ALG", "name": "Argélia", "flag": "🇩🇿", "missing": [5, 6, 8, 10, 12, 17]}, {"code": "AUT", "name": "Áustria", "flag": "🇦🇹", "missing": [2, 3, 6, 7, 11, 15, 16, 17, 20]}, {"code": "JOR", "name": "Jordânia", "flag": "🇯🇴", "missing": [1, 6, 7, 9, 10, 11, 12, 13, 14, 15, 17, 18, 19]}, {"code": "POR", "name": "Portugal", "flag": "🇵🇹", "missing": [1, 3, 4, 14, 15]}, {"code": "COD", "name": "República Democrática do Congo", "flag": "🇨🇩", "missing": [1, 3, 5, 8, 9, 11, 12, 15, 16, 18]}, {"code": "UZB", "name": "Uzbequistão", "flag": "🇺🇿", "missing": [11, 17]}, {"code": "COL", "name": "Colômbia", "flag": "🇨🇴", "missing": [1, 2, 6, 7, 9, 10, 14, 16, 19]}, {"code": "ENG", "name": "Inglaterra", "flag": "🏴", "missing": [2, 4, 5, 8, 10, 15, 16, 17, 18]}, {"code": "CRO", "name": "Croácia", "flag": "🇭🇷", "missing": [2, 3, 4, 5, 7, 9, 12, 14, 17, 18]}, {"code": "GHA", "name": "Gana", "flag": "🇬🇭", "missing": [3, 6, 7, 8, 11, 12, 16, 17]}, {"code": "PAN", "name": "Panamá", "flag": "🇵🇦", "missing": [1, 2, 6, 7, 9, 10, 12, 16, 19]}];
+    const STORAGE_KEY = "albumCopa2026State_v1";
+
+    let selectedCountry = "ALL";
+    let statusFilter = "all";
+    let deferredPrompt = null;
+    let stream = null;
+    let lastScanned = null;
+
+    const state = loadState();
+    const byCode = Object.fromEntries(INITIAL_COUNTRIES.map(c => [c.code, c]));
+    const $ = id => document.getElementById(id);
+
+    function loadState(){
+      try{
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        if(saved && typeof saved === "object") return saved;
+      }catch(e){}
+      const fresh = {};
+      INITIAL_COUNTRIES.forEach(c => fresh[c.code] = [...c.missing]);
+      return fresh;
+    }
+
+    function saveState(){
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      updateStats();
+    }
+
+    function isMissing(code, number){
+      return (state[code] || []).includes(Number(number));
+    }
+
+    function setMissing(code, number, missing){
+      number = Number(number);
+      const current = new Set(state[code] || []);
+      missing ? current.add(number) : current.delete(number);
+      state[code] = [...current].sort((a,b)=>a-b);
+      saveState();
+      render();
+    }
+
+    function toggleSticker(code, number){
+      setMissing(code, number, !isMissing(code, number));
+      toast(`${code} ${number}: ${isMissing(code, number) ? "marcada como faltando" : "marcada como já tenho"}`);
+    }
+
+    function updateStats(){
+      const missing = Object.values(state).reduce((sum, list) => sum + list.length, 0);
+      $("missingStat").textContent = missing;
+      $("ownedStat").textContent = 48 * 20 - missing;
+    }
+
+    function renderCountryStrip(){
+      const strip = $("countryStrip");
+      strip.innerHTML = "";
+      const all = document.createElement("button");
+      all.className = "country-pill" + (selectedCountry === "ALL" ? " active" : "");
+      all.innerHTML = `🌎 Todos <span class="count-badge">${Object.values(state).reduce((a,b)=>a+b.length,0)}</span>`;
+      all.onclick = () => { selectedCountry = "ALL"; render(); };
+      strip.appendChild(all);
+
+      INITIAL_COUNTRIES.forEach(c => {
+        const b = document.createElement("button");
+        b.className = "country-pill" + (selectedCountry === c.code ? " active" : "");
+        b.innerHTML = `${c.flag} ${c.name} <span class="count-badge">${(state[c.code]||[]).length}</span>`;
+        b.onclick = () => { selectedCountry = c.code; render(); window.scrollTo({top:0,behavior:"smooth"}); };
+        strip.appendChild(b);
+      });
+    }
+
+    function matchesSearch(country, query){
+      if(!query) return true;
+      const q = normalize(query);
+      const base = normalize(`${country.name} ${country.code}`);
+      if(base.includes(q)) return true;
+      const codeMatch = q.match(/([A-Z]{3})\s*0?(\d{1,2})/);
+      return !!(codeMatch && codeMatch[1] === country.code);
+    }
+
+    function render(){
+      updateStats();
+      renderCountryStrip();
+      const grid = $("countryGrid");
+      grid.innerHTML = "";
+      const query = $("search").value.trim();
+
+      const filtered = INITIAL_COUNTRIES.filter(c =>
+        (selectedCountry === "ALL" || c.code === selectedCountry) && matchesSearch(c, query)
+      );
+
+      if(!filtered.length){
+        grid.innerHTML = `<div class="empty">Nenhum país ou código encontrado.</div>`;
+        return;
+      }
+
+      filtered.forEach(c => {
+        const card = document.createElement("section");
+        card.className = "country-card";
+        const missingCount = (state[c.code] || []).length;
+        card.innerHTML = `
+          <div class="country-head">
+            <div class="country-title">
+              <span class="flag">${c.flag}</span>
+              <div><h2>${c.name}</h2><small>${c.code} • 20 figurinhas</small></div>
+            </div>
+            <span class="missing-total">${missingCount} faltando</span>
+          </div>
+          <div class="stickers"></div>
+          <p class="hint">Vermelho = faltando. Verde = já colada. O progresso é salvo neste celular.</p>
+        `;
+        const stickers = card.querySelector(".stickers");
+        for(let n=1;n<=20;n++){
+          const missing = isMissing(c.code,n);
+          const btn = document.createElement("button");
+          btn.className = `sticker ${missing ? "missing":"owned"}`;
+          if(statusFilter !== "all" && statusFilter !== (missing ? "missing":"owned")) btn.classList.add("hidden-status");
+          btn.textContent = `${c.code} ${n}`;
+          btn.setAttribute("aria-label", `${c.code} ${n}, ${missing ? "faltando":"já tenho"}`);
+          btn.onclick = () => toggleSticker(c.code,n);
+          stickers.appendChild(btn);
+        }
+        grid.appendChild(card);
+      });
+    }
+
+    function normalize(s){
+      return String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase().replace(/[|]/g,"I");
+    }
+
+    function parseCode(text){
+      const t = normalize(text).replace(/\n/g," ");
+      const validCodes = Object.keys(byCode).join("|");
+      const re = new RegExp(`\\b(${validCodes})\\s*[-:]?\\s*0?(\\d{1,2})\\b`);
+      let m = t.match(re);
+      if(m){
+        const n = Number(m[2]);
+        if(n >= 1 && n <= 20) return {code:m[1], number:n};
+      }
+      if(selectedCountry !== "ALL"){
+        const nums = t.match(/\b(?:0?[1-9]|1\d|20)\b/g);
+        if(nums && nums.length){
+          const n = Number(nums[0]);
+          return {code:selectedCountry, number:n};
+        }
+      }
+      return null;
+    }
+
+    function showResult(found){
+      const result = $("scanResult");
+      if(!found){
+        result.className = "result show missing";
+        $("resultCode").textContent = "Código não identificado";
+        $("resultCountry").textContent = "Digite o código manualmente, por exemplo: BRA 14.";
+        $("resultStatus").textContent = "";
+        $("toggleScanned").style.display = "none";
+        lastScanned = null;
+        return;
+      }
+      const country = byCode[found.code];
+      const missing = isMissing(found.code,found.number);
+      lastScanned = found;
+      result.className = `result show ${missing ? "missing":"owned"}`;
+      $("resultCode").textContent = `${found.code} ${found.number}`;
+      $("resultCountry").textContent = `${country.flag} ${country.name}`;
+      $("resultStatus").textContent = missing ? "🔴 Esta figurinha está faltando." : "🟢 Você já tem esta figurinha.";
+      $("toggleScanned").style.display = "block";
+      $("toggleScanned").textContent = missing ? "Marcar como já tenho" : "Marcar como faltando";
+    }
+
+    async function startCamera(){
+      stopCamera();
+      $("preview").style.display = "none";
+      $("camera").style.display = "block";
+      $("ocrStatus").textContent = "Abrindo câmera…";
+      try{
+        stream = await navigator.mediaDevices.getUserMedia({
+          video:{facingMode:{ideal:"environment"},width:{ideal:1920},height:{ideal:1080}},
+          audio:false
+        });
+        $("camera").srcObject = stream;
+        $("ocrStatus").textContent = "Centralize o código da figurinha e toque em Capturar.";
+      }catch(err){
+        $("ocrStatus").textContent = "Não foi possível abrir a câmera. Use a opção de escolher foto ou digite o código.";
+      }
+    }
+
+    function stopCamera(){
+      if(stream){ stream.getTracks().forEach(t=>t.stop()); stream=null; }
+      $("camera").srcObject = null;
+    }
+
+    async function capture(){
+      const video = $("camera");
+      if(!video.videoWidth){
+        $("ocrStatus").textContent = "A câmera ainda não está pronta.";
+        return;
+      }
+      const canvas = $("canvas");
+      const maxW = 1280;
+      const scale = Math.min(1,maxW/video.videoWidth);
+      canvas.width = Math.round(video.videoWidth*scale);
+      canvas.height = Math.round(video.videoHeight*scale);
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(video,0,0,canvas.width,canvas.height);
+      const dataUrl = canvas.toDataURL("image/jpeg",.88);
+      $("preview").src = dataUrl;
+      $("preview").style.display = "block";
+      $("camera").style.display = "none";
+      stopCamera();
+      await recognizeImage(dataUrl);
+    }
+
+    async function recognizeImage(source){
+      $("scanResult").className = "result";
+      if(!window.Tesseract){
+        $("ocrStatus").textContent = "O leitor automático não carregou. Verifique a internet ou use o código manual.";
+        showResult(null);
+        return;
+      }
+      try{
+        $("ocrStatus").textContent = "Lendo o código… 0%";
+        const result = await Tesseract.recognize(source,"eng",{
+          logger:m=>{
+            if(m.status === "recognizing text"){
+              $("ocrStatus").textContent = `Lendo o código… ${Math.round((m.progress||0)*100)}%`;
+            }
+          }
+        });
+        const text = result?.data?.text || "";
+        const found = parseCode(text);
+        $("ocrStatus").textContent = found ? `Texto reconhecido: ${text.trim().replace(/\s+/g," ").slice(0,90)}` : "Não encontrei um código válido na imagem.";
+        showResult(found);
+      }catch(err){
+        $("ocrStatus").textContent = "Não foi possível ler a foto. Tente aproximar o código ou digite manualmente.";
+        showResult(null);
+      }
+    }
+
+    function openModal(camera){
+      $("scannerModal").classList.add("open");
+      document.body.style.overflow = "hidden";
+      $("scanResult").className = "result";
+      if(camera) startCamera();
+      else {
+        stopCamera();
+        $("camera").style.display = "none";
+        $("preview").style.display = "none";
+        setTimeout(()=>$("manualCode").focus(),100);
+      }
+    }
+
+    function closeModal(){
+      $("scannerModal").classList.remove("open");
+      document.body.style.overflow = "";
+      stopCamera();
+    }
+
+    function toast(message){
+      const el = $("toast");
+      el.textContent = message;
+      el.classList.add("show");
+      clearTimeout(el._t);
+      el._t = setTimeout(()=>el.classList.remove("show"),2200);
+    }
+
+    $("search").addEventListener("input",render);
+    document.querySelectorAll(".segmented button").forEach(btn=>{
+      btn.onclick=()=>{
+        document.querySelectorAll(".segmented button").forEach(b=>b.classList.remove("active"));
+        btn.classList.add("active");
+        statusFilter=btn.dataset.status;
+        render();
+      };
+    });
+    $("openScanner").onclick=()=>openModal(true);
+    $("openManual").onclick=()=>openModal(false);
+    document.querySelectorAll("[data-close]").forEach(b=>b.onclick=closeModal);
+    $("scannerModal").addEventListener("click",e=>{if(e.target===$("scannerModal")) closeModal()});
+    $("captureBtn").onclick=capture;
+    $("retryBtn").onclick=startCamera;
+    $("checkManual").onclick=()=>showResult(parseCode($("manualCode").value));
+    $("manualCode").addEventListener("keydown",e=>{if(e.key==="Enter") showResult(parseCode(e.target.value))});
+    $("fileInput").addEventListener("change",e=>{
+      const file=e.target.files?.[0]; if(!file)return;
+      const reader=new FileReader();
+      reader.onload=ev=>{
+        $("preview").src=ev.target.result;
+        $("preview").style.display="block";
+        $("camera").style.display="none";
+        stopCamera();
+        recognizeImage(ev.target.result);
+      };
+      reader.readAsDataURL(file);
+    });
+    $("toggleScanned").onclick=()=>{
+      if(!lastScanned)return;
+      const wasMissing=isMissing(lastScanned.code,lastScanned.number);
+      setMissing(lastScanned.code,lastScanned.number,!wasMissing);
+      showResult(lastScanned);
+    };
+
+    window.addEventListener("beforeinstallprompt",e=>{
+      e.preventDefault(); deferredPrompt=e; $("installBtn").style.display="block";
+    });
+    $("installBtn").onclick=async()=>{
+      if(deferredPrompt){
+        deferredPrompt.prompt();
+        await deferredPrompt.userChoice;
+        deferredPrompt=null;
+      }else{
+        toast("No Chrome: menu ⋮ → Adicionar à tela inicial.");
+      }
+    };
+    window.addEventListener("appinstalled",()=>toast("Aplicativo instalado!"));
+
+    if("serviceWorker" in navigator){
+      window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+    }
+
+    updateStats();
+    render();
+  </script>
+</body>
+</html>
